@@ -14,7 +14,7 @@ app.on('ready', function() {
   mainWindow = new BrowserWindow({
 	width: 1366,
 	height: 768,
-	show: true,
+	show: false,
 	frame: false,
 	'node-integration': false,
 	preload: __dirname + '/preload.js'

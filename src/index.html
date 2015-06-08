@@ -5,7 +5,7 @@
 	<style>html {height: 100%} body {height: 100%}</style>
   </head>
   <body>
-    <script type="text/javascript" src="../SPA/webpack/bundle.js" charset="utf-8"></script>
+    <script src="../SPA/webpack/bundle.js"></script>
     <script>
       __electron__remote.getCurrentWindow().capturePage(function(buf) {
         __electron__remote.require('fs').writeFile('./screenshot.png', buf.toPng(), function(err) {

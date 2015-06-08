@@ -7,7 +7,6 @@
   <body>
     <script src="../SPA/webpack/bundle.js"></script>
     <script>
-	  setTimeout(function(){
         __electron__remote.getCurrentWindow().capturePage(function(buf) {
           __electron__remote.require('fs').writeFile('./screenshot.png', buf.toPng(), function(err) {
             if(err){
@@ -15,7 +14,6 @@
 	        }
           });
         });
-	  }, 3000);
     </script>
   </body>
 </html>

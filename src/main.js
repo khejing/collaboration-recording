@@ -12,12 +12,12 @@ app.on('window-all-closed', function() {
 
 app.on('ready', function() {
   mainWindow = new BrowserWindow({
-	  width: 1366,
-	  height: 768,
-	  show: false,
-	  frame: false,
-	  'node-integration': false,
-	  preload: __dirname + '/preload.js'
+	width: 1366,
+	height: 768,
+	show: true,
+	frame: false,
+	'node-integration': false,
+	preload: __dirname + '/preload.js'
   });
 
   mainWindow.loadUrl('file://' + __dirname + '/index.html');

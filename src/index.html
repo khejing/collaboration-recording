@@ -2,10 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8">
+	<style>html {height: 100%} body {height: 100%}</style>
   </head>
   <body>
-test
-测试
+    <script type="text/javascript" src="../SPA/webpack/bundle.js" charset="utf-8"></script>
     <script>
       __electron__remote.getCurrentWindow().capturePage(function(buf) {
         __electron__remote.require('fs').writeFile('./screenshot.png', buf.toPng(), function(err) {

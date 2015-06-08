@@ -6,14 +6,5 @@
   </head>
   <body>
     <script src="../SPA/webpack/bundle.js"></script>
-    <script>
-        __electron__remote.getCurrentWindow().capturePage(function(buf) {
-          __electron__remote.require('fs').writeFile('./screenshot.png', buf.toPng(), function(err) {
-            if(err){
-	          console.log(err);
-	        }
-          });
-        });
-    </script>
   </body>
 </html>

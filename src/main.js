@@ -13,7 +13,7 @@ app.on('window-all-closed', function() {
 app.on('ready', function() {
   mainWindow = new BrowserWindow({
 	width: 1366,
-	height: 768,
+	height: 728,
 	show: false,
 	frame: false,
 	'node-integration': false,

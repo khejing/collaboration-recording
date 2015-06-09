@@ -1,5 +1,7 @@
 var app = require('app');
 var BrowserWindow = require('browser-window');
+var ipc = require('ipc');
+var fs = require('fs');
 
 require('crash-reporter').start();
 
@@ -27,4 +29,14 @@ app.on('ready', function() {
   mainWindow.on('closed', function() {
     mainWindow = null;
   });
+});
+
+ipc.on('WriteFile', function(event, buf){
+  console.log(typeof buf);
+  /*fs.writeFile(, buf.toPng(), function(err) {
+    console.log("write file finished: "+Date.now());
+    if(err){
+      console.log(err);
+    }
+  });*/
 });

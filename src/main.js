@@ -38,7 +38,7 @@ ipc.on('WriteFile', function(event, filename){
     console.log("capture finished in main: "+Date.now());
     var mybuffer = jason.stringify(buf);
 	console.log("serialization finished in main: "+Date.now());
-  };
+  });
   /*console.log("got message to write file: "+filename+", time is "Date.now());
   fs.writeFile(filename, buf, function(err) {
     console.log("write file finished: "+Date.now());

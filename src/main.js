@@ -31,8 +31,9 @@ app.on('ready', function() {
   });
 });
 
-ipc.on('WriteFile', function(event, buf){
-  console.log(typeof buf);
+ipc.on('WriteFile', function(event, id, buf){
+  console.log(id);
+  console.log(buf);
   /*fs.writeFile(, buf.toPng(), function(err) {
     console.log("write file finished: "+Date.now());
     if(err){

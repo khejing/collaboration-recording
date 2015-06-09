@@ -31,13 +31,11 @@ app.on('ready', function() {
   });
 });
 
-ipc.on('WriteFile', function(event, id, buf){
-  console.log(id);
-  console.log(buf.toDataUrl());
-  /*fs.writeFile(, buf.toPng(), function(err) {
+ipc.on('WriteFile', function(event, filename, buf){
+  fs.writeFile(filename, buf, function(err) {
     console.log("write file finished: "+Date.now());
     if(err){
       console.log(err);
     }
-  });*/
+  });
 });

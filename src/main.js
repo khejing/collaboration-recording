@@ -32,6 +32,7 @@ app.on('ready', function() {
 });
 
 ipc.on('WriteFile', function(event, filename, buf){
+  console.log("got message to write file: "+filename+", time is "+Date.now());
   fs.writeFile(filename, buf, function(err) {
     console.log("write file finished: "+Date.now());
     if(err){

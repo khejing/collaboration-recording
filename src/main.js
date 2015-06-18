@@ -7,8 +7,7 @@ require('crash-reporter').start();
 var mainWindow = null;
 
 app.on('window-all-closed', function() {
-  //TODO: exit when computer restart, to see what node service should do when system down?
-  //app.quit();
+  app.quit();
 });
 
 app.on('ready', function() {

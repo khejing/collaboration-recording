@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/khejing/collaboration-recording/issues"
   },
-  "homepage": "https://github.com/khejing/collaboration-recording"
+  "homepage": "https://github.com/khejing/collaboration-recording",
+  "dependencies": {
+    "electron-prebuilt": "^0.28.2"
+  }
 }

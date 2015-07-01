@@ -24,10 +24,10 @@ mqttClientInstance.on('message', function(messageTopic, data) {
         display: {width: 1024, height: 980, depth: 24}
     };
 
-    headless(options, function(err, childProcess, servernum) {
+    headless(options, function(err, xvfbChildProcess, servernum) {
         // childProcess is a ChildProcess, as returned from child_process.spawn()
         console.log('Xvfb running on server number', servernum);
-        console.log('Xvfb pid', childProcess.pid);
+        console.log('Xvfb pid', xvfbChildProcess.pid);
         console.log('err should be null', err);
         // spawn electron
         var electronChild = childProcess.spawn(electronPath, [__dirname+"/electron_app"], {env: {"DISPLAY": ":"+servernum+".0", "TopicToSubscribe": data}});

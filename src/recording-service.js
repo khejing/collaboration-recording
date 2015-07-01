@@ -18,10 +18,8 @@ mqttClientInstance.on('error',function(error) {
 mqttClientInstance.subscribe(recordingTopic);
 
 mqttClientInstance.on('message', function(messageTopic, data) {
-    var object = JSON.parse(data);
-    console.log("recv msg: " + data);
     var options = {
-        display: {width: 1024, height: 980, depth: 24}
+        display: {width: 1366, height: 768, depth: 24}
     };
 
     headless(options, function(err, xvfbChildProcess, servernum) {
@@ -30,7 +28,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
         console.log('Xvfb pid', xvfbChildProcess.pid);
         console.log('err should be null', err);
         // spawn electron
-        var electronChild = childProcess.spawn(electronPath, [__dirname+"/electron_app"], {env: {"DISPLAY": ":"+servernum+".0", "TopicToSubscribe": data}});
+        var electronChild = childProcess.spawn(electronPath, [__dirname+"/electron_app"], {env: {DISPLAY: ":"+servernum+".0", TopicToSubscribe: data}});
         electronChild.stderr.on('data', function(data){
             console.log(data.toString());
         });

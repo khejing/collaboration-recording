@@ -30,7 +30,10 @@ mqttClientInstance.on('message', function(messageTopic, data) {
         console.log('Xvfb pid', childProcess.pid);
         console.log('err should be null', err);
         // spawn electron
-        var electronChild = childProcess.spawn(electronPath, [__dirname+"/electron_app"], {env: {DISPLAY:":"+servernum+".0", TopicToSubscribe: data}});
+        var electronChild = childProcess.spawn(electronPath, [__dirname+"/electron_app"], {env: {"DISPLAY": ":"+servernum+".0", "TopicToSubscribe": data}});
+        electronChild.stderr.on('data', function(data){
+            console.log(data.toString());
+        });
     });
 });
 /* when got exit signal, then exit

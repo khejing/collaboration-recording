@@ -1,6 +1,5 @@
 var app = require('app');
 var BrowserWindow = require('browser-window');
-var ipc = require('ipc');
 
 require('crash-reporter').start();
 
@@ -27,7 +26,4 @@ app.on('ready', function() {
   mainWindow.on('closed', function() {
     mainWindow = null;
   });
-});
-
-ipc.on('did-start', function(event, filename){
 });

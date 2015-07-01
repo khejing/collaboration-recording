@@ -26,6 +26,9 @@ mqttClientInstance.on('message', function(messageTopic, data) {
         // childProcess is a ChildProcess, as returned from child_process.spawn()
         console.log('Xvfb running on server number', servernum);
         console.log('Xvfb pid', childProcess.pid);
+        childProcess.on("exit", function(){
+           console.log("process exited");
+        });
         console.log('err should be null', err);
     });
 });

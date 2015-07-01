@@ -30,7 +30,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
         // spawn electron
         var electronChild = childProcess.spawn(electronPath, [__dirname+"/electron_app"], {env: {DISPLAY: ":"+servernum+".0", TopicToSubscribe: data}});
         electronChild.stderr.on('data', function(data){
-            console.log(data.toString());
+            process.stdout.write(data.toString());
         });
     });
 });

@@ -21,7 +21,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
     var object = JSON.parse(data);
     console.log("recv msg: " + data);
     var options = {
-        display: {width: 1024, height: 980, depth: 32}
+        display: {width: 1024, height: 980, depth: 24}
     };
 
     headless(options, function(err, childProcess, servernum) {

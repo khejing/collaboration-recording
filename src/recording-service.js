@@ -4,7 +4,7 @@
 
 var mqtt = require('mqtt');
 var headless = require('headless');
-var electron = require('electron-prebuilt');
+var electronPath = require('electron-prebuilt');
 var childProcess = require('child_process');
 
 var recordingTopic = "recording";
@@ -28,13 +28,10 @@ mqttClientInstance.on('message', function(messageTopic, data) {
         // childProcess is a ChildProcess, as returned from child_process.spawn()
         console.log('Xvfb running on server number', servernum);
         console.log('Xvfb pid', childProcess.pid);
-        childProcess.on("exit", function(){
-           console.log("process exited");
-        });
         console.log('err should be null', err);
+        // spawn electron
+        var electronChild = childProcess.spawn(electronPath, [__dirname+"/electron_app"], {env: {DISPLAY:":"+servernum+".0", TopicToSubscribe: data}});
     });
-    // spawn electron
-    var electronChild = childProcess.spawn(electron, [__dirname+"/electron_app"], {env: {TopicToSubscribe: data}});
 });
 /* when got exit signal, then exit
 mqttClientInstance.end();

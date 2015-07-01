@@ -6,6 +6,7 @@ var mqtt = require('mqtt');
 var headless = require('headless');
 var electronPath = require('electron-prebuilt');
 var childProcess = require('child_process');
+var portFinder = require('portfinder');
 
 var recordingTopic = "recording";
 var mqttClientInstance = mqtt.connect("mqtt://localhost:1883", {clientId: recordingTopic});
@@ -31,6 +32,9 @@ mqttClientInstance.on('message', function(messageTopic, data) {
         electronChild.stderr.on('data', function(data){
             process.stdout.write(data.toString());
         });
+    });
+    portFinder.getPort(function (err, port) {
+        console.log("got free port: "+port);
     });
 });
 /* when got exit signal, then exit

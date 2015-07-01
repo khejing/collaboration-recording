@@ -4,6 +4,8 @@
 
 var mqtt = require('mqtt');
 var headless = require('headless');
+var electron = require('electron-prebuilt');
+var childProcess = require('child_process');
 
 var recordingTopic = "recording";
 var mqttClientInstance = mqtt.connect("mqtt://localhost:1883", {clientId: recordingTopic});
@@ -31,6 +33,8 @@ mqttClientInstance.on('message', function(messageTopic, data) {
         });
         console.log('err should be null', err);
     });
+    // spawn electron
+    var electronChild = childProcess.spawn(electron, [__dirname+"/electron_app"], {env: {TopicToSubscribe: data}});
 });
 /* when got exit signal, then exit
 mqttClientInstance.end();

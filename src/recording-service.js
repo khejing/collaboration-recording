@@ -7,6 +7,8 @@ var headless = require('headless');
 var electronPath = require('electron-prebuilt');
 var childProcess = require('child_process');
 var portFinder = require('portfinder');
+var ffmpeg = require('fluent-ffmpeg');
+var moment = require('moment');
 
 var recordingTopic = "recording";
 var mqttClientInstance = mqtt.connect("mqtt://localhost:1883", {clientId: recordingTopic});
@@ -27,14 +29,28 @@ mqttClientInstance.on('message', function(messageTopic, data) {
         console.log('Xvfb running on server number', servernum);
         console.log('Xvfb pid', xvfbChildProcess.pid);
         console.log('err should be null', err);
+        var displayOpt = ":"+servernum+".0";
         // spawn electron after xvfb has been started
-        var electronChild = childProcess.spawn(electronPath, [__dirname+"/electron_app"], {env: {DISPLAY: ":"+servernum+".0", TopicToSubscribe: data}});
+        var electronChild = childProcess.spawn(electronPath, [__dirname+"/electron_app"], {env: {DISPLAY: displayOpt, TopicToSubscribe: data}});
         electronChild.stderr.on('data', function(data){
             process.stdout.write(data.toString());
         });
-    });
-    portFinder.getPort(function (err, port) {
-        console.log("got free port: "+port);
+        portFinder.getPort(function (err, port) {
+            console.log("got free port: "+port);
+            function ffmpegLog(data){
+                console.log(data);
+            }
+            var ffmpegCommand = ffmpeg({logger: {debug: ffmpegLog, info: ffmpegLog, warn: ffmpegLog, error: ffmpegLog}});
+            ffmpegCommand
+                .input("tcp://localhost:"+port+"?listen=1")
+                .input(displayOpt)
+                .inputFormat("x11grab")
+                .inputFPS(25)
+                .inputOptions("-video_size 1366x768")
+                .output(moment().format("YYYYMMDDHHmmss")+".m3u8")
+                .audioCodec("aac")
+                .videoCodec("libx264");
+        });
     });
 });
 /* when got exit signal, then exit

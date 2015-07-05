@@ -24,6 +24,7 @@ app.on('ready', function() {
   //mainWindow.openDevTools();
 
   mainWindow.on('closed', function() {
+    console.log("browser window has been closed by itself");
     mainWindow = null;
   });
 });

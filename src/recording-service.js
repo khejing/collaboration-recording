@@ -21,6 +21,7 @@ mqttClientInstance.on('error',function(error) {
 mqttClientInstance.subscribe(recordingTopic);
 
 mqttClientInstance.on('message', function(messageTopic, data) {
+    var msg = JSON.parse(data);
     var options = {
         display: {width: 1366, height: 768, depth: 24}
     };
@@ -47,9 +48,10 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                 .inputFormat("x11grab")
                 .inputFPS(25)
                 .inputOptions("-video_size 1366x768")
-                .output(moment().format("YYYYMMDDHHmmss")+".m3u8")
+                .output(msg.topic[0]+msg.topic[1]+moment().format("YYYYMMDDHHmmss")+".m3u8")
                 .audioCodec("aac")
-                .videoCodec("libx264");
+                .videoCodec("libx264")
+                .run();
         });
     });
 });

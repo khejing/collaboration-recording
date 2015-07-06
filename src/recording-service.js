@@ -54,6 +54,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                     .outputOptions(["-pix_fmt yuv420p", "-crf 28", "-g 50", "-hls_time 10", "-threads 0", "-shortest"]);
             }
             var filenamePrefix = msg.teacherTopic+"-"+msg.type+"-"+moment().format("YYYYMMDDHHmmss");
+            var pathPrefix = "/var/lib/recording/"+filenamePrefix;
             var duration = -1;
             var ffmpegCommand = ffmpeg({logger: {debug: ffmpegLog, info: ffmpegLog, warn: ffmpegLog, error: ffmpegLog}});
             ffmpegCommand
@@ -62,14 +63,14 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                 .inputFormat("x11grab")
                 .inputFPS(25)
                 .inputOptions("-video_size 1366x768")
-                .output(filenamePrefix+"-desktop"+".m3u8")
+                .output(pathPrefix+"-desktop"+".m3u8")
                 .size("1280x720")
                 .preset(ffmpegOutput)
-                .output(filenamePrefix+"-tablet"+".m3u8")
+                .output(pathPrefix+"-tablet"+".m3u8")
                 .size("640x360")
                 .preset(ffmpegOutput)
                 .outputOptions(["-maxrate 1000K", "-bufsize 2000K"])
-                .output(filenamePrefix+"-smartphone"+".m3u8")
+                .output(pathPrefix+"-smartphone"+".m3u8")
                 .size("480x320")
                 .autopad()
                 .preset(ffmpegOutput)

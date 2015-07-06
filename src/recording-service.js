@@ -102,12 +102,12 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                     });
                     fs.writeFile(filenamePrefix+".m3u8", m3u.toString(), null, function(err){
                         if(err === null){
-                            mqttClientInstance.publish(msg.clientId, {recording: "DurationAndURL", duration: duration, filenamePrefix: filenamePrefix});
+                            mqttClientInstance.publish(msg.clientId, JSON.stringify({recording: "DurationAndURL", duration: duration, filenamePrefix: filenamePrefix}));
                         }
                     });
                 })
                 .run();
-            mqttClientInstance.publish(msg.clientId, {recording: "Port", port: port});
+            mqttClientInstance.publish(msg.clientId, JSON.stringify({recording: "Port", port: port}));
         });
     });
 });

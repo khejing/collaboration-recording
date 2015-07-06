@@ -85,25 +85,25 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                 .on("end", function(){
                     console.log("ffmpeg ended!!!");
                     var m3u8Content = m3u8.M3U.create();
-                    m3u.addStreamItem ({
+                    m3u8Content.addStreamItem ({
                         uri: filenamePrefix+"-desktop"+".m3u8",
                         "PROGRAM-ID": 1,
                         BANDWIDTH: 2001000,
                         RESOLUTION: "1280x720"
                     });
-                    m3u.addStreamItem ({
+                    m3u8Content.addStreamItem ({
                         uri: filenamePrefix+"-tablet"+".m3u8",
                         "PROGRAM-ID": 1,
                         BANDWIDTH: 1001000,
                         RESOLUTION: "640x360"
                     });
-                    m3u.addStreamItem ({
+                    m3u8Content.addStreamItem ({
                         uri: filenamePrefix+"-smartphone"+".m3u8",
                         "PROGRAM-ID": 1,
                         BANDWIDTH: 510000,
                         RESOLUTION: "480x320"
                     });
-                    fs.writeFile(filenamePrefix+".m3u8", m3u.toString(), null, function(err){
+                    fs.writeFile(filenamePrefix+".m3u8", m3u8Content.toString(), null, function(err){
                         if(err === null){
                             mqttClientInstance.publish(msg.clientId, JSON.stringify({recording: "DurationAndURL", duration: duration, filenamePrefix: filenamePrefix}));
                         }

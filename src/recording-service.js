@@ -40,7 +40,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
         });
         electronChild.on("exit", function(){
             console.log("electron has been closed");
-            xvfbChildProcess.exit();
+            xvfbChildProcess.kill();
         });
         portFinder.getPort(function (err, port) {
             console.log("got free port: "+port);
@@ -78,10 +78,6 @@ mqttClientInstance.on('message', function(messageTopic, data) {
 					console.log(command);
 					mqttClientInstance.publish(msg.clientId, JSON.stringify({recording: "Port", port: port}));
 				})
-                .on("codecData", function(data){
-                    duration = data.duration;
-                    console.log("got time: "+duration);
-                })
                 .on("end", function(){
                     console.log("ffmpeg ended!!!");
                     var m3u8Content = m3u8.M3U.create();

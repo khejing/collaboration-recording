@@ -80,7 +80,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
 				})
                 .on("codecData", function(data){
                     duration = data.duration;
-                    console.log("got time: "+data.timemark);
+                    console.log("got time: "+duration);
                 })
                 .on("end", function(){
                     console.log("ffmpeg ended!!!");

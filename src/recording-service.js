@@ -74,7 +74,10 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                 .autopad()
                 .preset(ffmpegOutput)
                 .outputOptions(["-maxrate 500K", "-bufsize 1000K"])
-                .on("start", function(command){console.log(command);})
+                .on("start", function(command){
+					console.log(command);
+					mqttClientInstance.publish(msg.clientId, JSON.stringify({recording: "Port", port: port}));
+				})
                 .on("codecData", function(data){
                     duration = data.duration;
                     console.log("got time: "+data.timemark);
@@ -107,7 +110,6 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                     });
                 })
                 .run();
-            mqttClientInstance.publish(msg.clientId, JSON.stringify({recording: "Port", port: port}));
         });
     });
 });

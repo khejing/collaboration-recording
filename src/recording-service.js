@@ -51,7 +51,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                 command
                     .audioCodec("aac")
                     .videoCodec("libx264")
-                    .outputOptions("-pix_fmt yuv420p", "-crf 28", "-g 50", "-hls_time 10", "-threads 0", "-shortest");
+                    .outputOptions(["-pix_fmt yuv420p", "-crf 28", "-g 50", "-hls_time 10", "-threads 0", "-shortest"]);
             }
             var filenamePrefix = msg.teacherTopic+"-"+msg.type+"-"+moment().format("YYYYMMDDHHmmss");
             var duration = -1;
@@ -68,12 +68,12 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                 .output(filenamePrefix+"-tablet"+".m3u8")
                 .size("640x360")
                 .preset(ffmpegOutput)
-                .outputOptions("-maxrate 1000K", "-bufsize 2000K")
+                .outputOptions(["-maxrate 1000K", "-bufsize 2000K"])
                 .output(filenamePrefix+"-smartphone"+".m3u8")
                 .size("480x320")
                 .autopad()
                 .preset(ffmpegOutput)
-                .outputOptions("-maxrate 500K", "-bufsize 1000K")
+                .outputOptions(["-maxrate 500K", "-bufsize 1000K"])
                 .on("start", function(command){console.log(command);})
                 .on("codecData", function(data){
                     duration = data.duration;

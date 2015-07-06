@@ -75,8 +75,8 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                 .preset(ffmpegOutput)
                 .outputOptions("-maxrate 500K", "-bufsize 1000K")
                 .on("start", function(command){console.log(command);})
-                .on("progress", function(data){
-                    duration = data.timemark;
+                .on("codecData", function(data){
+                    duration = data.duration;
                     console.log("got time: "+data.timemark);
                 })
                 .on("end", function(){

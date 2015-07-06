@@ -33,15 +33,13 @@ mqttClientInstance.on('message', function(messageTopic, data) {
         console.log('Xvfb pid', xvfbChildProcess.pid);
         console.log('err should be null', err);
         var displayOpt = ":"+servernum+".0";
+
         // spawn electron after xvfb has been started
         var electronChild = childProcess.spawn(electronPath, [__dirname+"/electron_app"], {env: {DISPLAY: displayOpt, TopicToSubscribe: data}});
         electronChild.stderr.on('data', function(data){
             process.stdout.write(data.toString());
         });
-        electronChild.on("exit", function(){
-            console.log("electron has been closed");
-            xvfbChildProcess.kill();
-        });
+
         portFinder.getPort(function (err, port) {
             console.log("got free port: "+port);
             function ffmpegLog(data){
@@ -85,6 +83,8 @@ mqttClientInstance.on('message', function(messageTopic, data) {
 				})
                 .on("end", function(){
                     console.log("ffmpeg ended!!!");
+                    electronChild.kill();
+                    xvfbChildProcess.kill();
                     var m3u8Content = m3u8.M3U.create();
                     m3u8Content.addStreamItem ({
                         uri: filenamePrefix+"-desktop"+".m3u8",

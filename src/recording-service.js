@@ -75,6 +75,10 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                 .autopad()
                 .preset(ffmpegOutput)
                 .outputOptions(["-maxrate 500K", "-bufsize 1000K"])
+                .on("error", function(err, stdout, stderr){
+                    console.log("got error from ffmpeg: "+err.message);
+                    console.log("ffmpeg stderr: "+stderr);
+                })
                 .on("start", function(command){
 					console.log(command);
 					mqttClientInstance.publish(msg.clientId, JSON.stringify({recording: "Port", port: port}));

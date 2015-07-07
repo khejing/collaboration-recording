@@ -53,7 +53,6 @@ mqttClientInstance.on('message', function(messageTopic, data) {
             }
             var filenamePrefix = msg.teacherTopic+"-"+msg.type+"-"+moment().format("YYYYMMDDHHmmss");
             var pathPrefix = "/var/lib/recording/"+filenamePrefix;
-            var duration = -1;
             var ffmpegCommand = ffmpeg({logger: {debug: ffmpegLog, info: ffmpegLog, warn: ffmpegLog, error: ffmpegLog}});
             ffmpegCommand
                 .input("tcp://localhost:"+port+"?listen=1")
@@ -104,9 +103,12 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                         BANDWIDTH: 510000,
                         RESOLUTION: "480x320"
                     });
-                    fs.writeFile(filenamePrefix+".m3u8", m3u8Content.toString(), null, function(err){
+                    fs.writeFile(pathPrefix+".m3u8", m3u8Content.toString(), null, function(err){
                         if(err === null){
-                            mqttClientInstance.publish(msg.clientId, JSON.stringify({recording: "DurationAndURL", duration: duration, filenamePrefix: filenamePrefix}));
+                            ffmpegCommand.ffprobe(pathPrefix+"-desktop"+".m3u8", function(err, metadata){
+                               console.dir(metadata);
+                                mqttClientInstance.publish(msg.clientId, JSON.stringify({recording: "DurationAndURL", duration: 0, filenamePrefix: filenamePrefix}));
+                            });
                         }
                     });
                 })

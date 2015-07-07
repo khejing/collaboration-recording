@@ -105,9 +105,8 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                     });
                     fs.writeFile(pathPrefix+".m3u8", m3u8Content.toString(), null, function(err){
                         if(err === null){
-                            ffmpegCommand.ffprobe(pathPrefix+"-desktop"+".m3u8", function(err, metadata){
-                               console.dir(metadata);
-                                mqttClientInstance.publish(msg.clientId, JSON.stringify({recording: "DurationAndURL", duration: 0, filenamePrefix: filenamePrefix}));
+                            ffmpeg.ffprobe(pathPrefix+".m3u8", function(err, metadata){
+                                mqttClientInstance.publish(msg.clientId, JSON.stringify({recording: "DurationAndURL", duration: metadata.format.duration, filenamePrefix: filenamePrefix}));
                             });
                         }
                     });

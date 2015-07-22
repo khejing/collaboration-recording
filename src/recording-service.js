@@ -11,6 +11,7 @@ var ffmpeg = require('fluent-ffmpeg');
 var moment = require('moment');
 var m3u8 = require("m3u8");
 var fs = require("fs");
+var PouchDB = require('pouchdb');
 
 var recordingTopic = "recording";
 var mqttClientInstance = mqtt.connect("mqtt://localhost:1883", {clientId: recordingTopic});
@@ -106,7 +107,23 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                     fs.writeFile(pathPrefix+".m3u8", m3u8Content.toString(), null, function(err){
                         if(err === null){
                             ffmpeg.ffprobe(pathPrefix+".m3u8", function(err, metadata){
-                                mqttClientInstance.publish(msg.clientId, JSON.stringify({recording: "DurationAndURL", duration: metadata.format.duration, filenamePrefix: filenamePrefix}));
+                                var db = new PouchDB("http://localhost:5984/"+
+                                    msg.teacherTopic.slice(0, msg.teacherTopic.lastIndexOf("-", msg.teacherTopic.length - 1))+
+                                    "%2F"+
+                                    msg.studentTopics[0].slice(0, msg.studentTopics[0].lastIndexOf("-", msg.studentTopics[0].length - 1)));
+                                db.get(msg.docId, null, function(err, result){
+                                    result.duration = metadata.format.duration;
+                                    result.filenamePrefix = filenamePrefix;
+                                    db.put(result, function(){
+                                        var msgContent = JSON.stringify({
+                                            chat: "NewMessage",
+                                            updateLocal: true,
+                                            docId: msg.docId
+                                        });
+                                        mqttClientInstance.publish(msg.teacherTopic, msgContent);
+                                        mqttClientInstance.publish(msg.studentTopics[0], msgContent);
+                                    });
+                                });
                             });
                         }
                     });

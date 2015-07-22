@@ -115,6 +115,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                     result.duration = metadata.format.duration;
                                     result.filenamePrefix = filenamePrefix;
                                     db.put(result, function(){
+                                        //TODO: if teacher or student is offline, then don't need to send msg
                                         var msgContent = JSON.stringify({
                                             chat: "NewMessage",
                                             updateLocal: true,

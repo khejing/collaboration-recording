@@ -127,8 +127,8 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                         replyMsgToTeacher.clientId = msg.studentTopics[0];
                                         var replyMsgToStudent = replyMsg;
                                         replyMsgToStudent.clientId = msg.teacherTopic;
-                                        mqttClientInstance.publish(msg.teacherTopic, JSON.stringify(replyMsgToStudent));
-                                        mqttClientInstance.publish(msg.studentTopics[0], JSON.stringify(replyMsgToTeacher));
+                                        mqttClientInstance.publish(msg.teacherTopic, JSON.stringify(replyMsgToTeacher));
+                                        mqttClientInstance.publish(msg.studentTopics[0], JSON.stringify(replyMsgToStudent));
                                     });
                                 });
                             });

@@ -120,7 +120,6 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                         //TODO: if teacher or student is offline, then don't need to send msg
                                         var replyMsg = {
                                             chat: "NewMessage",
-                                            updateLocal: true,
                                             docId: msg.docId,
                                             clientId: msg.studentTopics[0]
                                         };

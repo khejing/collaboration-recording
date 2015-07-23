@@ -52,8 +52,8 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                     .videoCodec("libx264")
                     .outputOptions(["-pix_fmt yuv420p", "-crf 28", "-g 50", "-hls_time 10", "-threads 0", "-shortest"]);
             }
-            var filenamePrefix = msg.teacherTopic+"-"+msg.type+"-"+moment().format("YYYYMMDDHHmmss");
-            var pathPrefix = "/var/lib/recording/"+filenamePrefix;
+            var recordingFileName = msg.teacherTopic+"-"+msg.type+"-"+moment().format("YYYYMMDDHHmmss");
+            var recordingFilePath = "/var/lib/recording/"+recordingFileName;
             var ffmpegCommand = ffmpeg({logger: {debug: ffmpegLog, info: ffmpegLog, warn: ffmpegLog, error: ffmpegLog}});
             ffmpegCommand
                 .input("tcp://localhost:"+port+"?listen=1")
@@ -61,14 +61,14 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                 .inputFormat("x11grab")
                 .inputFPS(25)
                 .inputOptions(["-video_size 1366x768", "-draw_mouse 0"])
-                .output(pathPrefix+"-desktop"+".m3u8")
+                .output(recordingFilePath+"-desktop"+".m3u8")
                 .size("1280x720")
                 .preset(ffmpegOutput)
-                .output(pathPrefix+"-tablet"+".m3u8")
+                .output(recordingFilePath+"-tablet"+".m3u8")
                 .size("640x360")
                 .preset(ffmpegOutput)
                 .outputOptions(["-maxrate 1000K", "-bufsize 2000K"])
-                .output(pathPrefix+"-smartphone"+".m3u8")
+                .output(recordingFilePath+"-smartphone"+".m3u8")
                 .size("480x320")
                 .autopad()
                 .preset(ffmpegOutput)
@@ -87,33 +87,34 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                     xvfbChildProcess.kill();
                     var m3u8Content = m3u8.M3U.create();
                     m3u8Content.addStreamItem ({
-                        uri: filenamePrefix+"-desktop"+".m3u8",
+                        uri: recordingFileName+"-desktop"+".m3u8",
                         "PROGRAM-ID": 1,
                         BANDWIDTH: 2001000,
                         RESOLUTION: "1280x720"
                     });
                     m3u8Content.addStreamItem ({
-                        uri: filenamePrefix+"-tablet"+".m3u8",
+                        uri: recordingFileName+"-tablet"+".m3u8",
                         "PROGRAM-ID": 1,
                         BANDWIDTH: 1001000,
                         RESOLUTION: "640x360"
                     });
                     m3u8Content.addStreamItem ({
-                        uri: filenamePrefix+"-smartphone"+".m3u8",
+                        uri: recordingFileName+"-smartphone"+".m3u8",
                         "PROGRAM-ID": 1,
                         BANDWIDTH: 510000,
                         RESOLUTION: "480x320"
                     });
-                    fs.writeFile(pathPrefix+".m3u8", m3u8Content.toString(), null, function(err){
+                    fs.writeFile(recordingFilePath+".m3u8", m3u8Content.toString(), null, function(err){
                         if(err === null){
-                            ffmpeg.ffprobe(pathPrefix+".m3u8", function(err, metadata){
+                            ffmpeg.ffprobe(recordingFilePath+".m3u8", function(err, metadata){
                                 var db = new PouchDB("http://localhost:5984/"+
                                     msg.teacherTopic.slice(0, msg.teacherTopic.lastIndexOf("-", msg.teacherTopic.length - 1))+
                                     "%2F"+
                                     msg.studentTopics[0].slice(0, msg.studentTopics[0].lastIndexOf("-", msg.studentTopics[0].length - 1)));
                                 db.get(msg.docId, null, function(err, result){
                                     result.duration = metadata.format.duration;
-                                    result.filenamePrefix = filenamePrefix;
+                                    result.recordingFileName = recordingFileName;
+                                    result.videoType = msg.type;
                                     result.syncStatus = [false, false];
                                     db.put(result, function(){
                                         //TODO: if teacher or student is offline, then don't need to send msg

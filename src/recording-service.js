@@ -121,14 +121,12 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                         var replyMsg = {
                                             chat: "NewMessage",
                                             updateLocal: true,
-                                            docId: msg.docId
+                                            docId: msg.docId,
+                                            clientId: msg.studentTopics[0]
                                         };
-                                        var replyMsgToTeacher = replyMsg;
-                                        replyMsgToTeacher.clientId = msg.studentTopics[0];
-                                        var replyMsgToStudent = replyMsg;
-                                        replyMsgToStudent.clientId = msg.teacherTopic;
-                                        mqttClientInstance.publish(msg.teacherTopic, JSON.stringify(replyMsgToTeacher));
-                                        mqttClientInstance.publish(msg.studentTopics[0], JSON.stringify(replyMsgToStudent));
+                                        mqttClientInstance.publish(msg.teacherTopic, JSON.stringify(replyMsg));
+                                        replyMsg.clientId = msg.teacherTopic;
+                                        mqttClientInstance.publish(msg.studentTopics[0], JSON.stringify(replyMsg));
                                     });
                                 });
                             });

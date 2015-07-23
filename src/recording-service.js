@@ -117,13 +117,17 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                     result.syncStatus = [false, false];
                                     db.put(result, function(){
                                         //TODO: if teacher or student is offline, then don't need to send msg
-                                        var msgContent = JSON.stringify({
+                                        var replyMsg = {
                                             chat: "NewMessage",
                                             updateLocal: true,
                                             docId: msg.docId
-                                        });
-                                        mqttClientInstance.publish(msg.teacherTopic, msgContent);
-                                        mqttClientInstance.publish(msg.studentTopics[0], msgContent);
+                                        };
+                                        var replyMsgToTeacher = replyMsg;
+                                        replyMsgToTeacher.clientId = msg.studentTopics[0];
+                                        var replyMsgToStudent = replyMsg;
+                                        replyMsgToStudent.clientId = msg.teacherTopic;
+                                        mqttClientInstance.publish(msg.teacherTopic, JSON.stringify(replyMsgToTeacher));
+                                        mqttClientInstance.publish(msg.studentTopics[0], JSON.stringify(replyMsgToStudent));
                                     });
                                 });
                             });

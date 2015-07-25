@@ -114,7 +114,6 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                 db.get(msg.docId, null, function(err, result){
                                     result.duration = metadata.format.duration;
                                     result.recordingFileName = recordingFileName;
-                                    result.videoType = msg.type;
                                     result.syncStatus = [false, false];
                                     db.put(result, function(){
                                         //TODO: if teacher or student is offline, then don't need to send msg

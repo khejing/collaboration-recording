@@ -64,7 +64,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                 .input(displayOpt)
                 .inputFormat("x11grab")
                 .inputFPS(25)
-                .inputOptions(["-itsoffset 30+", "-video_size 1366x768", "-draw_mouse 0"])
+                .inputOptions(["-itsoffset 30", "-video_size 1366x768", "-draw_mouse 0"])
                 .output(recordingFilePath+"-desktop"+".m3u8")
                 .size("1280x720")
                 .preset(ffmpegOutput)

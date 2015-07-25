@@ -53,7 +53,11 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                     .outputOptions(["-pix_fmt yuv420p", "-crf 28", "-g 50", "-hls_time 10", "-threads 0", "-shortest"]);
             }
             var recordingFileName = msg.teacherTopic+"-"+msg.type+"-"+moment().format("YYYYMMDDHHmmss");
-            var recordingFilePath = "/var/lib/recording/"+recordingFileName;
+            var dirName = null;
+            if(msg.type === "tutor-video" || msg.type === "answer-video"){
+                dirName = "video-recording";
+            }
+            var recordingFilePath = "/var/lib/"+dirName+"/"+recordingFileName;
             var ffmpegCommand = ffmpeg({logger: {debug: ffmpegLog, info: ffmpegLog, warn: ffmpegLog, error: ffmpegLog}});
             ffmpegCommand
                 .input("tcp://localhost:"+port+"?listen=1")

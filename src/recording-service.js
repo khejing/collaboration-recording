@@ -50,7 +50,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                 command
                     .audioCodec("aac")
                     .videoCodec("libx264")
-                    .outputOptions(["-pix_fmt yuv420p", "-g 50", "-crf 28", "-hls_time 10", "-hls_list_size 0","-threads 0", "-shortest"]);
+                    .outputOptions(["-pix_fmt yuv420p", "-crf 28", "-hls_time 10", "-hls_list_size 0","-threads 0", "-shortest"]);
             }
             var recordingFileName = msg.teacherTopic+"-"+msg.type+"-"+moment().format("YYYYMMDDHHmmss");
             var dirName = null;
@@ -64,7 +64,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                 .input(displayOpt)
                 .inputFormat("x11grab")
                 .inputFPS(25)
-                .inputOptions(["-itsoffset 13", "-video_size 1366x768", "-draw_mouse 0"])
+                .inputOptions(["-video_size 1366x768", "-draw_mouse 0"])
                 .output(recordingFilePath+"-desktop"+".m3u8")
                 .size("1280x720")
                 .preset(ffmpegOutput)

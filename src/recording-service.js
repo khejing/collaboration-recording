@@ -50,7 +50,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                 command
                     .audioCodec("aac")
                     .videoCodec("libx264")
-                    .outputOptions(["-pix_fmt yuv420p", "-g 50", "-tune zerolatency", "-crf 28", "-hls_time 10", "-hls_list_size 0","-threads 0", "-shortest"]);
+                    .outputOptions(["-pix_fmt yuv420p", "-crf 28", "-hls_time 10", "-hls_list_size 0","-threads 0", "-shortest"]);
             }
             var recordingFileName = msg.teacherTopic+"-"+msg.type+"-"+moment().format("YYYYMMDDHHmmss");
             var dirName = null;

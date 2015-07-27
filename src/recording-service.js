@@ -134,7 +134,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                     var result = JSON.parse(stdout);
                                     var i = 0;
                                     for(; i< result.waiting.queue.length; i++){
-                                        if(eesult.waiting.queue[i] === recordingFileName+'.m3u8'){
+                                        if(result.waiting.queue[i] === recordingFileName+'.m3u8'){
                                             console.log(recordingFileName+" is still uploading, wait for a moment");
                                             setTimeout(unlinkCb, 500);
                                             return;

@@ -85,9 +85,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
 					mqttClientInstance.publish(msg.clientId, JSON.stringify({recording: "Port", port: port}));
 				})
                 .on("end", function(){
-                    console.log("ffmpeg ended!!!");
-                    electronChild.kill();
-                    xvfbChildProcess.kill();
+                    console.log(moment().format("YYYY-MM-DD HH:mm:ss")+": ffmpeg ended!!!");
                     var m3u8Content = m3u8.M3U.create();
                     m3u8Content.addStreamItem ({
                         uri: recordingFileName+"-desktop"+".m3u8",
@@ -131,8 +129,30 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                     });
                                 });
                             });
+                            var unlinkCb = function(){
+                                childProcess.exec("/home/khejing/qiniu/qrsboxcli status", function(err, stdout, stderr){
+                                    var result = JSON.parse(stdout);
+                                    var i = 0;
+                                    for(; i< result.waiting.queue.length; i++){
+                                        if(eesult.waiting.queue[i] === recordingFileName+'.m3u8'){
+                                            console.log(recordingFileName+" is still uploading, wait for a moment");
+                                            setTimeout(unlinkCb, 500);
+                                            return;
+                                        }
+                                    }
+                                    console.log(recordingFileName+" has been uploaded to qiniu, so delete local files");
+                                    childProcess.exec("rm -f "+recordingFilePath+"*", function(err, stdout, stderr) {
+                                        if(err !== null){
+                                            console.log('exec error: ' + error);
+                                        }
+                                    });
+                                });
+                            };
+                            unlinkCb();
                         }
                     });
+                    electronChild.kill();
+                    xvfbChildProcess.kill();
                 })
                 .run();
         });

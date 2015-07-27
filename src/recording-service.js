@@ -85,7 +85,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
 					mqttClientInstance.publish(msg.clientId, JSON.stringify({recording: "Port", port: port}));
 				})
                 .on("end", function(){
-                    console.log(moment().format("YYYY-MM-DD HH:mm:ss")+": ffmpeg ended!!!");
+                    console.log("["+moment().format("YYYY-MM-DD HH:mm:ss")+"] ffmpeg ended!!!");
                     var m3u8Content = m3u8.M3U.create();
                     m3u8Content.addStreamItem ({
                         uri: recordingFileName+"-desktop"+".m3u8",
@@ -136,7 +136,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                     for(; i< result.waiting.queue.length; i++){
                                         if(result.waiting.queue[i] === recordingFileName+'.m3u8'){
                                             console.log(recordingFileName+" is still uploading, wait for a moment");
-                                            setTimeout(unlinkCb, 500);
+                                            setTimeout(unlinkCb, 1000);
                                             return;
                                         }
                                     }

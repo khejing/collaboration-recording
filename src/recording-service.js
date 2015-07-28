@@ -52,7 +52,13 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                     .videoCodec("libx264")
                     .outputOptions(["-pix_fmt yuv420p", "-g 25", "-tune zerolatency", "-crf 28", "-hls_time 10", "-hls_list_size 0","-threads 0", "-shortest"]);
             }
-            var recordingFileName = msg.teacherTopic+"-"+msg.type+"-"+moment().format("YYYYMMDDHHmmss");
+            var topic = null;
+            if(msg.type === 'tutor-video'){
+                topic = msg.teacherTopic;
+            }else if(msg.type === 'answer-video'){
+                topic = msg.clientId;
+            }
+            var recordingFileName = topic+"-"+msg.type+"-"+moment().format("YYYYMMDDHHmmss");
             var dirName = null;
             if(msg.type === "tutor-video" || msg.type === "answer-video"){
                 dirName = "video-recording";

@@ -130,7 +130,11 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                         });
                                     });
                                 }else if(msg.type === 'answer-video'){
-                                    mqttClientInstance.publish(msg.clientId, JSON.stringify({chat: "AnswerRecordingFinished",duration: metadata.format.duration, recordingFileName: recordingFileName}));
+                                    mqttClientInstance.publish(msg.clientId, JSON.stringify({
+                                        chat: "AnswerRecordingFinished",
+                                        duration: metadata.format.duration,
+                                        recordingFileName: recordingFileName
+                                    }));
                                 }else{
                                     console.log("unknown msg.type");
                                 }

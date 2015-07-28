@@ -108,26 +108,32 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                     fs.writeFile(recordingFilePath+".m3u8", m3u8Content.toString(), null, function(err){
                         if(err === null){
                             ffmpeg.ffprobe(recordingFilePath+".m3u8", function(err, metadata){
-                                var db = new PouchDB("http://localhost:5984/"+
-                                    msg.teacherTopic.slice(0, msg.teacherTopic.lastIndexOf("-", msg.teacherTopic.length - 1))+
-                                    "%2F"+
-                                    msg.studentTopics[0].slice(0, msg.studentTopics[0].lastIndexOf("-", msg.studentTopics[0].length - 1)));
-                                db.get(msg.docId, null, function(err, result){
-                                    result.duration = metadata.format.duration;
-                                    result.recordingFileName = recordingFileName;
-                                    result.syncStatus = [false, false];
-                                    db.put(result, function(){
-                                        //TODO: if teacher or student is offline, then don't need to send msg
-                                        var replyMsg = {
-                                            chat: "NewMessage",
-                                            docId: msg.docId,
-                                            clientId: msg.studentTopics[0]
-                                        };
-                                        mqttClientInstance.publish(msg.teacherTopic, JSON.stringify(replyMsg));
-                                        replyMsg.clientId = msg.teacherTopic;
-                                        mqttClientInstance.publish(msg.studentTopics[0], JSON.stringify(replyMsg));
+                                if(msg.type === 'tutor-video'){
+                                    var db = new PouchDB("http://localhost:5984/"+
+                                        msg.teacherTopic.slice(0, msg.teacherTopic.lastIndexOf("-", msg.teacherTopic.length - 1))+
+                                        "%2F"+
+                                        msg.studentTopics[0].slice(0, msg.studentTopics[0].lastIndexOf("-", msg.studentTopics[0].length - 1)));
+                                    db.get(msg.docId, null, function(err, result){
+                                        result.duration = metadata.format.duration;
+                                        result.recordingFileName = recordingFileName;
+                                        result.syncStatus = [false, false];
+                                        db.put(result, function(){
+                                            //TODO: if teacher or student is offline, then don't need to send msg
+                                            var replyMsg = {
+                                                chat: "NewMessage",
+                                                docId: msg.docId,
+                                                clientId: msg.studentTopics[0]
+                                            };
+                                            mqttClientInstance.publish(msg.teacherTopic, JSON.stringify(replyMsg));
+                                            replyMsg.clientId = msg.teacherTopic;
+                                            mqttClientInstance.publish(msg.studentTopics[0], JSON.stringify(replyMsg));
+                                        });
                                     });
-                                });
+                                }else if(msg.type === 'answer-video'){
+                                    mqttClientInstance.publish(msg.clientId, JSON.stringify({chat: "AnswerRecordingFinished",duration: metadata.format.duration, recordingFileName: recordingFileName}));
+                                }else{
+                                    console.log("unknown msg.type");
+                                }
                             });
                             var unlinkCb = function(){
                                 childProcess.exec("/home/khejing/qiniu/qrsboxcli status", function(err, stdout, stderr){

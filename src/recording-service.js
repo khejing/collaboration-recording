@@ -144,27 +144,28 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                 }else{
                                     console.log("unknown msg.type");
                                 }
-                            });
-                            var unlinkCb = function(){
-                                childProcess.exec("/home/khejing/qiniu/qrsboxcli status", function(err, stdout, stderr){
-                                    var result = JSON.parse(stdout);
-                                    var i = 0;
-                                    for(; i< result.waiting.queue.length; i++){
-                                        if(result.waiting.queue[i] === recordingFileName+'.m3u8'){
-                                            console.log(recordingFileName+" is still uploading, wait for a moment");
-                                            setTimeout(unlinkCb, 1000);
-                                            return;
+                                // this should be done after ffprobe has finished, or metadata could be undefined
+                                var unlinkCb = function(){
+                                    childProcess.exec("/home/khejing/qiniu/qrsboxcli status", function(err, stdout, stderr){
+                                        var result = JSON.parse(stdout);
+                                        var i = 0;
+                                        for(; i< result.waiting.queue.length; i++){
+                                            if(result.waiting.queue[i] === recordingFileName+'.m3u8'){
+                                                console.log(recordingFileName+" is still uploading, wait for a moment");
+                                                setTimeout(unlinkCb, 1000);
+                                                return;
+                                            }
                                         }
-                                    }
-                                    console.log(recordingFileName+" has been uploaded to qiniu, so delete local files");
-                                    childProcess.exec("rm -f "+recordingFilePath+"*", function(err, stdout, stderr) {
-                                        if(err !== null){
-                                            console.log('exec error: ' + error);
-                                        }
+                                        console.log(recordingFileName+" has been uploaded to qiniu, so delete local files");
+                                        childProcess.exec("rm -f "+recordingFilePath+"*", function(err, stdout, stderr) {
+                                            if(err !== null){
+                                                console.log('exec error: ' + error);
+                                            }
+                                        });
                                     });
-                                });
-                            };
-                            unlinkCb();
+                                };
+                                unlinkCb();
+                            });
                         }
                     });
                     electronChild.kill();

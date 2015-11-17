@@ -36,7 +36,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
         var displayOpt = ":"+servernum+".0";
 
         // spawn electron after xvfb has been started
-        var electronChild = childProcess.spawn(electronPath, [__dirname+"/electron_app"], {env: {DISPLAY: displayOpt, TopicToSubscribe: data}});
+        var electronChild = childProcess.spawn(electronPath, [__dirname+"/electron_app"], {env: {DISPLAY: displayOpt, RecordingInfo: data}});
         electronChild.stderr.on('data', function(data){
             process.stdout.write(data.toString());
         });
@@ -126,7 +126,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                         db.put(result, function(){
                                             //TODO: if teacher or student is offline, then don't need to send msg
                                             var replyMsg = {
-                                                chat: "NewMessage",
+                                                chat: "MultiPartyRecordingFinished",
                                                 docId: msg.docId,
                                                 clientId: msg.studentTopics[0]
                                             };
@@ -135,9 +135,9 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                             mqttClientInstance.publish(msg.studentTopics[0], JSON.stringify(replyMsg));
                                         });
                                     });
-                                }else if(msg.type === 'answer-video'){
+                                }else if(msg.type === 'answer-video' || msg.type === 'lession'){
                                     mqttClientInstance.publish(msg.clientId, JSON.stringify({
-                                        chat: "AnswerRecordingFinished",
+                                        chat: "SingleRecordingFinished",
                                         duration: metadata.format.duration,
                                         recordingFileName: recordingFileName
                                     }));

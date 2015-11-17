@@ -1,2 +1,2 @@
 // Load node module here and remove node integration
-window.topicToSubscribe = JSON.parse(process.env.TopicToSubscribe);
+window.recordingInfo = JSON.parse(process.env.RecordingInfo);

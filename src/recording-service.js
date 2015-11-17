@@ -12,6 +12,7 @@ var moment = require('moment');
 var m3u8 = require("m3u8");
 var fs = require("fs");
 var PouchDB = require('pouchdb');
+var config = require('./config.js');
 
 var recordingTopic = "recording";
 var mqttClientInstance = mqtt.connect("mqtt://localhost:1883", {clientId: recordingTopic});
@@ -55,15 +56,11 @@ mqttClientInstance.on('message', function(messageTopic, data) {
             var topic = null;
             if(msg.type === 'tutor-video'){
                 topic = msg.teacherTopic;
-            }else if(msg.type === 'answer-video'){
+            }else if(msg.type === 'answer-video' || msg.type === 'lession'){
                 topic = msg.clientId;
             }
             var recordingFileName = topic+"-"+msg.type+"-"+moment().format("YYYYMMDDHHmmss");
-            var dirName = null;
-            if(msg.type === "tutor-video" || msg.type === "answer-video"){
-                dirName = "video-recording";
-            }
-            var recordingFilePath = "/var/lib/"+dirName+"/"+recordingFileName;
+            var recordingFilePath = "/var/lib/video-recording/"+recordingFileName;
             var ffmpegCommand = ffmpeg({logger: {debug: ffmpegLog, info: ffmpegLog, warn: ffmpegLog, error: ffmpegLog}});
             ffmpegCommand
                 .input("tcp://localhost:"+port+"?listen=1")
@@ -146,7 +143,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                 }
                                 // this should be done after ffprobe has finished, or metadata could be undefined
                                 var unlinkCb = function(){
-                                    childProcess.exec("/home/khejing/qiniu/qrsboxcli status", function(err, stdout, stderr){
+                                    childProcess.exec(config.QRSBOXCLI_DIR+"/qrsboxcli status", function(err, stdout, stderr){
                                         var result = JSON.parse(stdout);
                                         var i = 0;
                                         for(; i< result.waiting.queue.length; i++){

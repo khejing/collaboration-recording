@@ -136,7 +136,8 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                     mqttClientInstance.publish(msg.clientId, JSON.stringify({
                                         chat: "SingleRecordingFinished",
                                         duration: metadata.format.duration,
-                                        recordingFileName: recordingFileName
+                                        recordingFileName: recordingFileName,
+                                        clientId: msg.clientId
                                     }));
                                 }else{
                                     console.log("unknown msg.type");

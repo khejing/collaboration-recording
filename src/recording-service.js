@@ -27,7 +27,7 @@ mqttClientInstance.subscribe(recordingTopic);
 mqttClientInstance.on('message', function(messageTopic, data) {
     var msg = JSON.parse(data);
     var options = {
-        display: {width: 1366, height: 768, depth: 24}
+        display: {width: 1024, height: 768, depth: 24}
     };
     headless(options, function(err, xvfbChildProcess, servernum) {
         // childProcess is a ChildProcess, as returned from child_process.spawn()
@@ -66,16 +66,16 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                 .input("tcp://localhost:"+port+"?listen=1")
                 .input(displayOpt)
                 .inputFormat("x11grab")
-                .inputOptions(["-itsoffset 5", "-framerate 25", "-video_size 1366x768", "-draw_mouse 0"])
+                .inputOptions(["-itsoffset 5", "-framerate 25", "-video_size 1024x576", "-draw_mouse 0"])
                 .output(recordingFilePath+"-desktop"+".m3u8")
                 .size("1280x720")
                 .preset(ffmpegOutput)
                 .output(recordingFilePath+"-tablet"+".m3u8")
-                .size("640x360")
+                .size("1024x576")
                 .preset(ffmpegOutput)
                 .outputOptions(["-maxrate 1000K", "-bufsize 2000K"])
                 .output(recordingFilePath+"-smartphone"+".m3u8")
-                .size("480x320")
+                .size("640x360")
                 .autopad()
                 .preset(ffmpegOutput)
                 .outputOptions(["-maxrate 500K", "-bufsize 1000K"])
@@ -100,13 +100,13 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                         uri: recordingFileName+"-tablet"+".m3u8",
                         "PROGRAM-ID": 1,
                         BANDWIDTH: 1001000,
-                        RESOLUTION: "640x360"
+                        RESOLUTION: "1024x576"
                     });
                     m3u8Content.addStreamItem ({
                         uri: recordingFileName+"-smartphone"+".m3u8",
                         "PROGRAM-ID": 1,
                         BANDWIDTH: 510000,
-                        RESOLUTION: "480x320"
+                        RESOLUTION: "640x360"
                     });
                     fs.writeFile(recordingFilePath+".m3u8", m3u8Content.toString(), null, function(err){
                         if(err === null){

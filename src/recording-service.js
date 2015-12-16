@@ -68,15 +68,11 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                 .inputFormat("x11grab")
                 .inputOptions(["-itsoffset 5", "-framerate 25", "-video_size 1024x576", "-draw_mouse 0"])
                 .output(recordingFilePath+"-desktop"+".m3u8")
-                .size("1280x720")
-                .preset(ffmpegOutput)
-                .output(recordingFilePath+"-tablet"+".m3u8")
                 .size("1024x576")
                 .preset(ffmpegOutput)
                 .outputOptions(["-maxrate 1000K", "-bufsize 2000K"])
                 .output(recordingFilePath+"-smartphone"+".m3u8")
                 .size("640x360")
-                .autopad()
                 .preset(ffmpegOutput)
                 .outputOptions(["-maxrate 500K", "-bufsize 1000K"])
                 .on("error", function(err, stdout, stderr){
@@ -94,18 +90,12 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                         uri: recordingFileName+"-desktop"+".m3u8",
                         "PROGRAM-ID": 1,
                         BANDWIDTH: 2001000,
-                        RESOLUTION: "1280x720"
-                    });
-                    m3u8Content.addStreamItem ({
-                        uri: recordingFileName+"-tablet"+".m3u8",
-                        "PROGRAM-ID": 1,
-                        BANDWIDTH: 1001000,
                         RESOLUTION: "1024x576"
                     });
                     m3u8Content.addStreamItem ({
                         uri: recordingFileName+"-smartphone"+".m3u8",
                         "PROGRAM-ID": 1,
-                        BANDWIDTH: 510000,
+                        BANDWIDTH: 1010000,
                         RESOLUTION: "640x360"
                     });
                     fs.writeFile(recordingFilePath+".m3u8", m3u8Content.toString(), null, function(err){

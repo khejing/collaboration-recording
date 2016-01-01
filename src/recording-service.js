@@ -125,9 +125,15 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                 // this should be done after ffprobe has finished, or metadata could be undefined
                                 var unlinkCb = function(){
                                     childProcess.exec(config.QRSBOXCLI_DIR+"/qrsboxcli status", function(err, stdout, stderr){
-                                        var result = JSON.parse(stdout);
+                                        var result;
+                                        try{
+                                            result = JSON.parse(stdout);
+                                        }catch(e){
+                                            console.log("parse qrsboxcli status output failed");
+                                            return;
+                                        }
                                         var i = 0;
-                                        for(; i< result.waiting.queue.length; i++){
+                                        for(; i < result.waiting.queue.length; i++){
                                             if(result.waiting.queue[i] === recordingFileName+'.m3u8'){
                                                 console.log(recordingFileName+" is still uploading, wait for a moment");
                                                 setTimeout(unlinkCb, 1000);

@@ -125,11 +125,15 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                 // this should be done after ffprobe has finished, or metadata could be undefined
                                 var unlinkCb = function(){
                                     childProcess.exec(config.QRSBOXCLI_DIR+"/qrsboxcli status", function(err, stdout, stderr){
+                                        if(err){
+                                          console.log("start child process error: "+err);
+                                          return;
+                                        }
                                         var result;
                                         try{
                                             result = JSON.parse(stdout);
                                         }catch(e){
-                                            console.log("parse qrsboxcli status output failed: "+stdout);
+                                            console.log("parse qrsboxcli status output failed: "+e);
                                             return;
                                         }
                                         var i = 0;

@@ -129,7 +129,7 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                         try{
                                             result = JSON.parse(stdout);
                                         }catch(e){
-                                            console.log("parse qrsboxcli status output failed");
+                                            console.log("parse qrsboxcli status output failed: "+stdout);
                                             return;
                                         }
                                         var i = 0;

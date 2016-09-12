@@ -31,9 +31,13 @@ mqttClientInstance.on('message', function(messageTopic, data) {
     };
     headless(options, function(err, xvfbChildProcess, servernum) {
         // childProcess is a ChildProcess, as returned from child_process.spawn()
+        if(err){
+            console.log('headless error:', err);
+            //TODO: tell client don't wait
+            return;
+        }
         console.log('Xvfb running on server number', servernum);
         console.log('Xvfb pid', xvfbChildProcess.pid);
-        console.log('err should be null', err);
         var displayOpt = ":"+servernum+".0";
 
         // spawn electron after xvfb has been started
@@ -80,9 +84,9 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                     console.log("ffmpeg stderr: "+stderr);
                 })
                 .on("start", function(command){
-					console.log(command);
-					mqttClientInstance.publish(msg.clientId, JSON.stringify({recording: "Port", port: port}));
-				})
+                    console.log(command);
+                    mqttClientInstance.publish(msg.clientId, JSON.stringify({recording: "Port", port: port}));
+                })
                 .on("end", function(){
                     console.log("["+moment().format("YYYY-MM-DD HH:mm:ss")+"] ffmpeg ended!!!");
                     var m3u8Content = m3u8.M3U.create();

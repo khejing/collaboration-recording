@@ -111,11 +111,13 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                         msg.teacherTopic.slice(0, msg.teacherTopic.lastIndexOf("-", msg.teacherTopic.length - 1))+
                                         "%2F"+
                                         msg.studentTopics[0].slice(0, msg.studentTopics[0].lastIndexOf("-", msg.studentTopics[0].length - 1)));
+                                    console.log("get tutor video record in database, docId is "+msg.docId);
                                     db.get(msg.docId, null, function(err, result){
                                         result.duration = metadata.format.duration;
                                         result.recordingFileName = recordingFileName;
                                         result.syncStatus = [false, false];
                                         db.put(result);
+                                        console.log("err is "+err+", put tutor video record in database: "+JSON.stringify(result));
                                     });
                                 }else if(msg.type === 'answer-video' || msg.type === 'lession'){
                                     replyMsg = {
@@ -123,8 +125,9 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                         duration: metadata.format.duration,
                                         recordingFileName: recordingFileName
                                     };
+                                    mqttClientInstance.publish(msg.clientId, JSON.stringify(replyMsg));
                                 }else{
-                                    console.log("unknown msg.type");
+                                    console.log("unknown msg.type: "+msg.type);
                                 }
                                 // this should be done after ffprobe has finished, or metadata could be undefined
                                 var unlinkCb = function(){
@@ -154,19 +157,6 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                                 console.log('exec error: ' + error);
                                             }
                                         });
-                                        if(msg.type === 'tutor-video'){
-                                            //TODO: if teacher or student is offline, then don't need to send msg
-                                            replyMsg = {
-                                                chat: "MultiPartyRecordingFinished",
-                                                docId: msg.docId,
-                                                clientId: msg.studentTopics[0]
-                                            };
-                                            mqttClientInstance.publish(msg.teacherTopic, JSON.stringify(replyMsg));
-                                            replyMsg.clientId = msg.teacherTopic;
-                                            mqttClientInstance.publish(msg.studentTopics[0], JSON.stringify(replyMsg));
-                                        }else if(msg.type === 'answer-video' || msg.type === 'lession'){
-                                            mqttClientInstance.publish(msg.clientId, JSON.stringify(replyMsg));
-                                        }
                                     });
                                 };
                                 unlinkCb();

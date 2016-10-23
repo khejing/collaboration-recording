@@ -111,8 +111,11 @@ mqttClientInstance.on('message', function(messageTopic, data) {
                                         msg.teacherTopic.slice(0, msg.teacherTopic.lastIndexOf("-", msg.teacherTopic.length - 1))+
                                         "%2F"+
                                         msg.studentTopics[0].slice(0, msg.studentTopics[0].lastIndexOf("-", msg.studentTopics[0].length - 1)));
-                                    console.log("get tutor video record in database, docId is "+msg.docId);
                                     db.get(msg.docId, null, function(err, result){
+                                        if(err){
+                                          console.log("get tutor video record of docId "+msg.docId+" in database err: "+err);
+                                          return;
+                                        }
                                         result.duration = metadata.format.duration;
                                         result.recordingFileName = recordingFileName;
                                         result.syncStatus = [false, false];
